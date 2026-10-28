@@ -1,8 +1,8 @@
-# Quillboard
+# Inkboard
 
 An infinite whiteboard built for the Surface Pen. One HTML file, no build step, installable as an app, works offline.
 
-**[Open Quillboard](https://prometheus-research-de.github.io/quillboard/)** · in Edge or Chrome choose *Install app* (⊕ in the address bar) to get it as a program on Windows.
+**[Open Inkboard](https://prometheus-research-de.github.io/inkboard/)** · in Edge or Chrome choose *Install app* (⊕ in the address bar) to get it as a program on Windows.
 
 ## Features
 
@@ -39,4 +39,4 @@ MIT © 2026 Prometheus Research. See [LICENSE](LICENSE).
 
 ---
 
-**Deutsch:** Quillboard ist ein unendliches Whiteboard für den Surface Pen: Druckempfindlichkeit, Radiererkappe, Lasso über die Seitentaste, Handballen-Erkennung. In Edge über *App installieren* als Programm einrichten. Die Oberfläche ist auf Deutsch, wenn dein System auf Deutsch eingestellt ist.
+**Deutsch:** Inkboard ist ein unendliches Whiteboard für den Surface Pen: Druckempfindlichkeit, Radiererkappe, Lasso über die Seitentaste, Handballen-Erkennung. In Edge über *App installieren* als Programm einrichten. Die Oberfläche ist auf Deutsch, wenn dein System auf Deutsch eingestellt ist.

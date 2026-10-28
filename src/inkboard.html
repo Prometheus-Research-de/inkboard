@@ -1,4 +1,4 @@
-<title>Quillboard</title>
+<title>Inkboard</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -249,7 +249,7 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
 <div class="topbar">
   <button class="chrome boardchip" id="boardBtn" data-ta="boardsBtn">
     <span class="ico" data-icon="menu"></span>
-    <span id="boardTitle">Quillboard</span>
+    <span id="boardTitle">Inkboard</span>
     <span class="save" id="saveState" data-state="loading"><span></span></span>
   </button>
   <div class="chrome viewbar" role="toolbar" data-ta="viewBar">
@@ -309,7 +309,7 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
 <div id="scrim" hidden></div>
 <aside id="drawer" hidden>
   <div class="dhead">
-    <h2>Quillboard</h2>
+    <h2>Inkboard</h2>
     <button class="ib" id="closeDrawer" data-icon="close" data-ta="close"></button>
   </div>
   <button class="newb" id="newBoardBtn"><span data-icon="plus"></span><span data-t="newBoard"></span></button>
@@ -355,7 +355,7 @@ const STR = {
     tipSaved: 'In deinem Claude-Konto gespeichert und auf deinen Geräten verfügbar.', tipLocal: 'Nur in diesem Browser gespeichert. Sichere wichtige Boards als JSON.', tipError: 'Speichern ist fehlgeschlagen. Sichere das Board als JSON.',
     element: 'Element', elements: 'Elemente', today: 'heute',
     boardN: 'Whiteboard {0}', firstSteps: 'Erste Schritte',
-    tNew: 'Neues Whiteboard angelegt', tDeleted: '„{0}“ gelöscht', tImported: '„{0}“ importiert', tBadFile: 'Die Datei ist keine Quillboard-Sicherung.',
+    tNew: 'Neues Whiteboard angelegt', tDeleted: '„{0}“ gelöscht', tImported: '„{0}“ importiert', tBadFile: 'Die Datei ist keine Inkboard-Sicherung.',
     tEmpty: 'Das Board ist leer.', tSaved: 'Gespeichert: {0}', tNoSave: 'Speichern ist hier nicht möglich.', tCopied: 'Bild in die Zwischenablage kopiert',
     tNoCopy: 'Kopieren geht hier nicht. Nimm „Als PNG speichern“.', tNoFs: 'Vollbild ist hier nicht verfügbar.',
     tFingerOn: 'Der Finger zeichnet jetzt', tFingerOff: 'Der Finger verschiebt und zoomt', tQuota: 'Der Speicher im Konto ist voll. Lösche alte Boards.',
@@ -404,7 +404,7 @@ const STR = {
     tipSaved: 'Saved in your Claude account and available on your devices.', tipLocal: 'Saved only in this browser. Save important boards as JSON.', tipError: 'Saving failed. Save the board as JSON.',
     element: 'item', elements: 'items', today: 'today',
     boardN: 'Whiteboard {0}', firstSteps: 'Getting started',
-    tNew: 'New whiteboard created', tDeleted: '"{0}" deleted', tImported: '"{0}" imported', tBadFile: 'This file is not a Quillboard backup.',
+    tNew: 'New whiteboard created', tDeleted: '"{0}" deleted', tImported: '"{0}" imported', tBadFile: 'This file is not a Inkboard backup.',
     tEmpty: 'The board is empty.', tSaved: 'Saved: {0}', tNoSave: 'Saving is not possible here.', tCopied: 'Image copied to the clipboard',
     tNoCopy: 'Copying does not work here. Use "Save as PNG".', tNoFs: 'Full screen is not available here.',
     tFingerOn: 'Your finger now draws', tFingerOff: 'Your finger pans and zooms', tQuota: 'Your account storage is full. Delete old boards.',
@@ -1640,7 +1640,7 @@ function welcomeEls() {
   const hl = { id: uid(), t: 'hl', c: 'yellow', w: 22, p: [] };
   for (let i = 0; i <= 30; i++) hl.p.push(r1(58 + i * 10.4), r1(101 + Math.sin(i / 4) * 1.5), 0.5);
   L.push(hl);
-  Tx(60, 38, 56, 'Quillboard');
+  Tx(60, 38, 56, 'Inkboard');
   Tx(60, 132, 24, w[0]);
   const wave = { id: uid(), t: 'ink', c: 'blue', w: 4.2, p: [] };
   const n = 150;
@@ -1704,7 +1704,7 @@ async function buildPDF() {
   const xref = len;
   let tail = 'xref\n0 6\n0000000000 65535 f \n';
   for (let i = 1; i <= 5; i++) tail += String(off[i]).padStart(10, '0') + ' 00000 n \n';
-  push(tail + `trailer\n<< /Size 6 /Root 1 0 R /Info << /Producer (Quillboard) >> >>\nstartxref\n${xref}\n%%EOF\n`);
+  push(tail + `trailer\n<< /Size 6 /Root 1 0 R /Info << /Producer (Inkboard) >> >>\nstartxref\n${xref}\n%%EOF\n`);
   return new Blob(parts, { type: 'application/pdf' });
 }
 async function offerFile(name, data) {
@@ -1743,7 +1743,7 @@ async function copyPNG() {
 }
 async function exportJSON() {
   finishText();
-  const s = '{"app":"quillboard","v":1,"name":' + JSON.stringify(board ? board.name : 'Whiteboard') + ',"els":[' + serial(els).join(',') + ']}';
+  const s = '{"app":"inkboard","v":1,"name":' + JSON.stringify(board ? board.name : 'Whiteboard') + ',"els":[' + serial(els).join(',') + ']}';
   await offerFile(fileBase() + '.json', s);
 }
 async function importJSON(file) {
@@ -1912,7 +1912,7 @@ function renderBoardList() {
   }
 }
 function updateBoardUI() {
-  $('#boardTitle').textContent = board ? board.name : 'Quillboard';
+  $('#boardTitle').textContent = board ? board.name : 'Inkboard';
   if (drawerOpen()) renderBoardList();
 }
 

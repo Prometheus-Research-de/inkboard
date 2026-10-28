@@ -1,5 +1,5 @@
-// Quillboard service worker: the app shell works offline; fonts are cached on first use.
-const VERSION = 'quillboard-v1';
+// Inkboard service worker: the app shell works offline; fonts are cached on first use.
+const VERSION = 'inkboard-v1';
 const SHELL = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png'];
 
 self.addEventListener('install', e => {

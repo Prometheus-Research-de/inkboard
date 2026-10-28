@@ -1,6 +1,6 @@
 {
-  "name": "Quillboard",
-  "short_name": "Quillboard",
+  "name": "Inkboard",
+  "short_name": "Inkboard",
   "description": "Infinite whiteboard made for the Surface Pen: pressure, eraser end, side-button lasso, palm rejection.",
   "id": "./",
   "start_url": "./",
