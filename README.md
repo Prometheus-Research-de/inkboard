@@ -2,7 +2,7 @@
 
 An infinite whiteboard built for the Surface Pen. One HTML file, no build step, installable as an app, works offline.
 
-**[Open Quillboard](https://prometheus-research.github.io/quillboard/)** · in Edge or Chrome choose *Install app* (⊕ in the address bar) to get it as a program on Windows.
+**[Open Quillboard](https://prometheus-research-de.github.io/quillboard/)** · in Edge or Chrome choose *Install app* (⊕ in the address bar) to get it as a program on Windows.
 
 ## Features
 
