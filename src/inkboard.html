@@ -94,6 +94,13 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
   font-weight: 500; font-variant-numeric: tabular-nums; cursor: pointer;
 }
 .zoomlbl:hover { background: var(--chrome-2); }
+.pbtn {
+  height: 40px; padding: 0 12px 0 9px; border: 0; border-radius: var(--r-btn); background: transparent; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 8px; font-weight: 500; color: var(--fg);
+}
+.pbtn:hover, .pbtn[aria-expanded="true"] { background: var(--chrome-2); }
+.pchip { width: 22px; height: 22px; border-radius: 6px; background: var(--board); box-shadow: inset 0 0 0 1.5px var(--fg); flex: none; }
+@media (max-width: 560px) { .pbtn { padding: 0 9px; } }
 .vsep { width: 1px; height: 24px; background: var(--line); margin: 0 3px; }
 
 /* dock */
@@ -253,7 +260,7 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
     <span class="save" id="saveState" data-state="loading"><span></span></span>
   </button>
   <div class="chrome viewbar" role="toolbar" data-ta="viewBar">
-    <button class="ib" id="bgBtn" data-icon="paper" aria-haspopup="true" data-ta="background"></button>
+    <button class="pbtn" id="bgBtn" aria-haspopup="true" data-ta="background"><span class="pchip" aria-hidden="true"></span><span class="hide-narrow" data-t="background"></span></button>
     <button class="ib" id="fingerBtn" data-icon="hand" aria-pressed="false" data-ta="finger"></button>
     <span class="vsep" aria-hidden="true"></span>
     <button class="ib hide-narrow" id="zoomOut" data-icon="minus" data-ta="zoomOut"></button>
@@ -316,6 +323,7 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
   <ul id="boardList"></ul>
   <div class="dsec">
     <h3 data-t="currentBoard"></h3>
+    <button class="row" id="paperRow"><span data-icon="paper"></span><span data-t="background"></span></button>
     <button class="row" id="pdfBtn"><span data-icon="download"></span><span data-t="savePdf"></span></button>
     <button class="row" id="pngBtn"><span data-icon="download"></span><span data-t="savePng"></span></button>
     <button class="row" id="copyBtn"><span data-icon="copy"></span><span data-t="copyImage"></span></button>
@@ -371,9 +379,9 @@ const STR = {
         <li>Seitentaste halten und umkreisen wählt aus. Danach im Rahmen ziehen zum Verschieben, am Kreis oben drehen, am Griff unten rechts skalieren.</li>
         <li>Während der Stift in der Nähe ist, ignoriert das Board deine Handfläche.</li></ul>
       <h3>Maus, Touchpad und Finger</h3><ul>
-        <li>Maus und Touchpad zeichnen nicht: Element anklicken und ziehen verschiebt es, auf freier Fläche ziehen verschiebt das Board, Umschalt + ziehen wählt per Lasso aus.</li>
-        <li>Scrollen bewegt das Board, Strg + Scrollen oder Pinch zoomt.</li>
-        <li>Ein Finger verschiebt, zwei Finger zoomen. Mit dem Hand-Symbol oben zeichnet der Finger stattdessen.</li></ul>
+        <li>Maus, Touchpad und Finger zeichnen nicht: Element antippen oder anklicken und ziehen verschiebt es, an den Griffen drehst und skalierst du. Auf freier Fläche ziehen verschiebt das Board.</li>
+        <li>Zwei Finger, Pinch oder Strg + Scrollen zoomen. Umschalt + ziehen mit der Maus wählt per Lasso aus.</li>
+        <li>Wer doch mit dem Finger malen will: Hand-Symbol oben einschalten.</li></ul>
       <h3>Tastatur</h3><dl class="keys">
         <dt><kbd>P</kbd> <kbd>M</kbd> <kbd>E</kbd></dt><dd>Stift, Marker, Radierer</dd>
         <dt><kbd>V</kbd> <kbd>T</kbd></dt><dd>Lasso, Text</dd>
@@ -420,9 +428,9 @@ const STR = {
         <li>Hold the side button and circle things to select them. Then drag inside the frame to move, use the circle on top to rotate and the handle at the bottom right to scale.</li>
         <li>While the pen is near the screen, the board ignores your palm.</li></ul>
       <h3>Mouse, touchpad and fingers</h3><ul>
-        <li>Mouse and touchpad never draw: click and drag an item to move it, drag empty space to pan, Shift + drag to lasso.</li>
-        <li>Scroll to pan, Ctrl + scroll or pinch to zoom.</li>
-        <li>One finger pans, two fingers zoom. With the hand button at the top, your finger draws instead.</li></ul>
+        <li>Mouse, touchpad and fingers never draw: tap or click an item and drag to move it, use the handles to rotate and scale. Drag empty space to pan.</li>
+        <li>Two fingers, pinch or Ctrl + scroll zoom. Shift + drag with the mouse lassos.</li>
+        <li>Want to paint with your finger after all? Turn on the hand button at the top.</li></ul>
       <h3>Keyboard</h3><dl class="keys">
         <dt><kbd>P</kbd> <kbd>M</kbd> <kbd>E</kbd></dt><dd>Pen, highlighter, eraser</dd>
         <dt><kbd>V</kbd> <kbd>T</kbd></dt><dd>Lasso, text</dd>
@@ -1077,10 +1085,12 @@ function onDown(e) {
     touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
     capture(e);
     if (action && action.pointerType === 'touch') cancelAction();
-    if (!prefs.finger || touches.size > 1 || gesture) { startGesture(!!gesture); return; }
+    if (touches.size > 1 || gesture) { startGesture(!!gesture); return; }
     if (action) return;
   } else if (action) return;
-  const mouse = e.pointerType === 'mouse';
+  const mouse = e.pointerType === 'mouse', touch = e.pointerType === 'touch';
+  // mouse, touchpad and fingers (unless finger drawing is on) never draw: they pick, move and pan
+  const nav = mouse || (touch && !prefs.finger), grab = touch ? 26 : 16;
   if (mouse) {
     if (e.button === 1 || (e.button === 0 && spaceDown)) { e.preventDefault(); capture(e); startPan(e); return; }
     if (e.button !== 0) return;
@@ -1093,19 +1103,18 @@ function onDown(e) {
   let tool = prefs.tool, barrel = false;
   if (e.pointerType === 'pen' && (e.button === 5 || (e.buttons & 32))) tool = 'eraser';
   else if (e.pointerType === 'pen' && (e.button === 2 || (e.buttons & 2))) { tool = 'select'; barrel = true; }
-  // mouse and touchpad never draw: they pick and move things (text tool excepted)
-  if (mouse && tool !== 'text') tool = 'select';
+  if (nav && tool !== 'text') tool = 'select';
   const base = { pointerId: e.pointerId, pointerType: e.pointerType, sx: e.clientX, sy: e.clientY, wx, wy, tool };
 
   if (selection.size && tool !== 'eraser') {
     const sb = selScreen();
-    if (sb && Math.hypot(e.clientX - sb.rx, e.clientY - sb.ry) <= 16) {
+    if (sb && Math.hypot(e.clientX - sb.rx, e.clientY - sb.ry) <= grab) {
       const b = selBounds(), cx = (b[0] + b[2]) / 2, cy = (b[1] + b[3]) / 2;
       action = { ...base, kind: 'rotate', cx, cy, a0: Math.atan2(wy - cy, wx - cx), moved: false };
       requestRender();
       return;
     }
-    if (sb && Math.hypot(e.clientX - sb.x1, e.clientY - sb.y1) <= 18) {
+    if (sb && Math.hypot(e.clientX - sb.x1, e.clientY - sb.y1) <= grab + 2) {
       const b = selBounds(), dxv = b[2] - b[0], dyv = b[3] - b[1], d2 = dxv * dxv + dyv * dyv || 1;
       const s0 = ((wx - b[0]) * dxv + (wy - b[1]) * dyv) / d2 || 1;
       action = { ...base, kind: 'scale', ax: b[0], ay: b[1], dxv, dyv, d2, s0, moved: false };
@@ -1120,9 +1129,9 @@ function onDown(e) {
     clearSelection();
   }
   if (tool === 'select' && !barrel) {
-    const el = topHit(wx, wy, 8 / view.z);
+    const el = topHit(wx, wy, (touch ? 16 : 8) / view.z);
     if (el) { selectOnly(el.id); action = { ...base, kind: 'move', moved: false, wasSelected: false }; return; }
-    if (mouse && !e.shiftKey) { startPan(e); return; }
+    if (nav && !e.shiftKey) { if (touch) startGesture(false); else startPan(e); return; }
   }
   switch (tool) {
     case 'pen': case 'hl': {
@@ -1819,6 +1828,7 @@ function setTool(t) {
 function closePopovers() {
   for (const id of ['#shapePop', '#helpPop', '#paperPop']) $(id).hidden = true;
   $('#helpBtn').setAttribute('aria-pressed', 'false');
+  $('#bgBtn').setAttribute('aria-expanded', 'false');
 }
 function placePop(pop, btn, above) {
   const r = btn.getBoundingClientRect(), w = pop.offsetWidth;
@@ -1969,12 +1979,15 @@ $('#zoomIn').addEventListener('click', () => zoomAt(W / 2, H / 2, 1.25));
 $('#zoomOut').addEventListener('click', () => zoomAt(W / 2, H / 2, 0.8));
 $('#zoomLbl').addEventListener('click', () => zoomAt(W / 2, H / 2, 1 / view.z));
 $('#fitBtn').addEventListener('click', fitView);
-$('#bgBtn').addEventListener('click', () => {
+function togglePaperPop() {
   const pop = $('#paperPop'), open = pop.hidden;
   closePopovers();
   if (!open) return;
   renderPaperPop(); pop.hidden = false; placePop(pop, $('#bgBtn'), false);
-});
+  $('#bgBtn').setAttribute('aria-expanded', 'true');
+}
+$('#bgBtn').addEventListener('click', togglePaperPop);
+$('#paperRow').addEventListener('click', () => { closeDrawer(); togglePaperPop(); });
 $('#fingerBtn').addEventListener('click', () => {
   prefs.finger = !prefs.finger; savePrefs();
   $('#fingerBtn').setAttribute('aria-pressed', String(prefs.finger));

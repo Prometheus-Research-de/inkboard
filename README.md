@@ -7,8 +7,8 @@ An infinite whiteboard built for the Surface Pen. One HTML file, no build step, 
 ## Features
 
 - **Pen first:** pressure-sensitive ink, the eraser end erases, holding the side button lassos a selection, palm rejection while the pen is near the screen, low-latency rendering (coalesced and predicted pointer events, delegated ink trail in Edge/Chrome)
-- **Mouse and touchpad never draw:** click and drag to move items, drag empty space to pan, Shift + drag to lasso
-- **Fingers:** one finger pans, two fingers pinch-zoom (switchable to finger drawing)
+- **Only the pen draws:** mouse, touchpad and fingers tap or click and drag to move items, use the handles to rotate and scale, drag empty space to pan
+- **Two fingers** pinch-zoom (finger drawing can be switched on)
 - Pen, highlighter, stroke eraser, lasso, line, arrow, rectangle, ellipse, text
 - Move, scale and **rotate** selections, duplicate, recolour, undo/redo
 - Paper colours (white, light grey, light blue, chalkboard, slate) and patterns (grid, dots, lines, plain)
